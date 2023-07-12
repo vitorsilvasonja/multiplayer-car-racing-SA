@@ -7,12 +7,12 @@ class Game {
 
     this.leader1 = createElement("h2");
     this.leader2 = createElement("h2");
-    this.playerMoving = false; 
+    this.playerMoving = false;
   }
 
   getState() {
     var gameStateRef = database.ref("gameState");
-    gameStateRef.on("value", function(data) {
+    gameStateRef.on("value", function (data) {
       gameState = data.val();
     });
   }
@@ -76,7 +76,7 @@ class Game {
 
     this.resetButton.class("resetButton");
     this.resetButton.position(width / 2 + 230, 100);
-    
+
     this.leadeboardTitle.html("Placar");
     this.leadeboardTitle.class("resetText");
     this.leadeboardTitle.position(width / 3 - 60, 40);
@@ -96,6 +96,9 @@ class Game {
 
     if (allPlayers !== undefined) {
       image(track, 0, -height * 5, width, height * 6);
+
+      this.showLeaderBoard()
+
 
       //índice da matriz
       var index = 0;
@@ -118,7 +121,7 @@ class Game {
 
           this.handleFuel(index);
           this.handlePowerCoins(index);
-          
+
           // Altere a posição da câmera na direção y
           camera.position.x = cars[index - 1].position.x;
           camera.position.y = cars[index - 1].position.y;
@@ -139,7 +142,7 @@ class Game {
 
   handleFuel(index) {
     // Adicione o combustível
-    cars[index - 1].overlap(fuels, function(collector, collected) {
+    cars[index - 1].overlap(fuels, function (collector, collected) {
       player.fuel = 185;
       //collected (coletado) é o sprite no grupo de colecionáveis que desencadeia
       //o evento
@@ -148,7 +151,7 @@ class Game {
   }
 
   handlePowerCoins(index) {
-    cars[index - 1].overlap(powerCoins, function(collector, collected) {
+    cars[index - 1].overlap(powerCoins, function (collector, collected) {
       player.score += 21;
       player.update();
       //collected (coletado) é o sprite no grupo de colecionáveis que desencadeia
@@ -157,30 +160,46 @@ class Game {
     });
   }
 
-handleResetButton() {
-  this.resetButton.mousePressed(() => {
-    database.ref("/").set({
-      playerCount: 0,
-      gameState: 0,
-      players: {}
+  handleResetButton() {
+    this.resetButton.mousePressed(() => {
+      database.ref("/").set({
+        playerCount: 0,
+        gameState: 0,
+        players: {}
+      });
+      window.location.reload();
     });
-    window.location.reload();
-  });
-}
-handlePlayerControls() {
-  if (keyIsDown(UP_ARROW)) {
-    player.positionY += 10;
-    player.update();
   }
+  handlePlayerControls() {
+    if (keyIsDown(UP_ARROW)) {
+      player.positionY += 10;
+      player.update();
+    }
 
-  if (keyIsDown(LEFT_ARROW) && player.positionX > width / 3 - 50) {
-    player.positionX -= 5;
-    player.update();
-  }
+    if (keyIsDown(LEFT_ARROW) && player.positionX > width / 3 - 50) {
+      player.positionX -= 5;
+      player.update();
+    }
 
-  if (keyIsDown(RIGHT_ARROW) && player.positionX < width / 2 + 300) {
-    player.positionX += 5;
-    player.update();
+    if (keyIsDown(RIGHT_ARROW) && player.positionX < width / 2 + 300) {
+      player.positionX += 5;
+      player.update();
+    }
   }
-}
+  showLeaderBoard() {
+    var leader1, leader2
+    var players = Object.values(allPlayers)
+
+    if ((players[0].rank == 0 && players[1].rank == 0) || players[0].rank == 1) {
+      leader1 = players[0].rank + "&emsp;" + players[0].name + "&emsp;" + players[0].score
+      leader2 = players[1].rank + "&emsp;" + players[0].name + "&emsp;" + players[1].score
+    }
+    if (players[1].rank == 1) {
+      leader2 = players[2].rank + "&emsp;" + players[2].name + "&emsp;" + players[0].score
+      leader1 = players[1].rank + "&emsp;" + players[0].name + "&emsp;" + players[1].score
+
+    }
+    this.leader1.html(leader1)
+    this.leader2.html(leader2)
+  }
 }

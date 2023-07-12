@@ -4,6 +4,8 @@ class Player {
     this.index = null;
     this.positionX = 0;
     this.positionY = 0;
+    this.score = 0;
+    this.rank = 0;
   }
 
    addPlayer() {
@@ -19,6 +21,8 @@ class Player {
       name: this.name,
       positionX: this.positionX,
       positionY: this.positionY,
+      score:this.score,
+      rank:this.rank,
     });
   }
   //TA
@@ -53,6 +57,8 @@ class Player {
       name: this.name,
       positionX: this.positionX,
       positionY: this.positionY,
+      score:this.score,
+      rank:this.rank,
      });
   }
 
